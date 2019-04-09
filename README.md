@@ -4,7 +4,7 @@ Command-line tool to create a list of TODOs written within Go source code.
 
 ## Prerequisites
 
-Go 1.7 or later.
+Go 1.6 or later.
 
 ## Build Instructions
 
