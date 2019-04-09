@@ -50,7 +50,7 @@ func importPkg(path, dir string) (*build.Package, error) {
 	}
 
 	// Don't parse binary-only packages (they don't contain any comment)
-	if pkg.BinaryOnly {
+	if IsBinaryPackage(pkg) {
 		return nil, fmt.Errorf("package %s is binary-only", path)
 	}
 
