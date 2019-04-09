@@ -55,6 +55,11 @@ func main() {
 		panic(err)
 	}
 
+	if len(os.Args) != 2 {
+		fmt.Fprintf(os.Stderr, "Usage: %s PACKAGE\n", os.Args[0])
+		os.Exit(1)
+	}
+
 	p := importPkg(os.Args[1], dir)
 	for _, f := range p.GoFiles {
 		extractTODO(filepath.Join(p.Dir, f))
