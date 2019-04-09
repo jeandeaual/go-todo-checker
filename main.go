@@ -13,46 +13,49 @@ import (
 
 const pattern = "TODO"
 
-func importPkg(path, dir string) *build.Package {
-	p, err := build.Import(path, dir, build.ImportComment)
+func importPkg(path, dir string) (*build.Package, error) {
+	pkg, err := build.Import(path, dir, build.ImportComment)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	if p.BinaryOnly {
-		return nil
+	if pkg.BinaryOnly {
+		return nil, fmt.Errorf("package %s is binary-only", path)
 	}
 
-	if p.IsCommand() {
-		return nil
+	if pkg.IsCommand() {
+		return nil, fmt.Errorf("package %s is a command", path)
 	}
 
-	return p
+	return pkg, nil
 }
 
-func extractTODO(fname string) {
+func extractTODO(fname string) error {
 	fset := token.NewFileSet()
 	f, err := parser.ParseFile(fset, fname, nil, parser.ParseComments)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	cmap := ast.NewCommentMap(fset, f, f.Comments)
 	for n, cgs := range cmap {
-		f := fset.File(n.Pos())
+		file := fset.File(n.Pos())
 		for _, cg := range cgs {
-			t := cg.Text()
-			if strings.Contains(t, pattern) {
-				fmt.Printf("%s:%v:\n%s\n", fname, f.Position(cg.Pos()).Line, t)
+			text := cg.Text()
+			if strings.Contains(text, pattern) {
+				fmt.Printf("%s:%v:\n%s\n", fname, file.Position(cg.Pos()).Line, text)
 			}
 		}
 	}
+
+	return nil
 }
 
 func main() {
 	dir, err := os.Getwd()
 	if err != nil {
-		panic(err)
+		fmt.Fprintf(os.Stderr, "Couldn't retrieve the current working directory: %s\n", err)
+		os.Exit(1)
 	}
 
 	if len(os.Args) != 2 {
@@ -60,8 +63,19 @@ func main() {
 		os.Exit(1)
 	}
 
-	p := importPkg(os.Args[1], dir)
-	for _, f := range p.GoFiles {
-		extractTODO(filepath.Join(p.Dir, f))
+	pkgName := os.Args[1]
+
+	pkg, err := importPkg(pkgName, dir)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Couldn't retrieve package: %s\n", err)
+		os.Exit(1)
+	}
+
+	for _, file := range pkg.GoFiles {
+		fname := filepath.Join(pkg.Dir, file)
+		err := extractTODO(fname)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Couldn't retrieve comments from %s: %s\n", fname, err)
+		}
 	}
 }
