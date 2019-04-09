@@ -14,7 +14,6 @@ import (
 const pattern = "TODO"
 
 func importPkg(path, dir string) *build.Package {
-
 	p, err := build.Import(path, dir, build.ImportComment)
 	if err != nil {
 		panic(err)
@@ -32,7 +31,6 @@ func importPkg(path, dir string) *build.Package {
 }
 
 func extractTODO(fname string) {
-
 	fset := token.NewFileSet()
 	f, err := parser.ParseFile(fset, fname, nil, parser.ParseComments)
 	if err != nil {
