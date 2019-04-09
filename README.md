@@ -15,9 +15,19 @@ go build -o todo
 ## Usage
 
 ```
+Usage: test.exe PACKAGE
+
+Flags:
+  -pattern string
+        Pattern to search for in the package comments (default "TODO")
+```
+
+Example:
+
+```
 $ ./todo fmt
-/usr/local/go/src/fmt/scan.go : 740 :
-TODO： accept N and Ni independently?
+/usr/lib/go/src/fmt/scan.go:732:
+TODO: accept N and Ni independently?
 ```
 
 ## Testing
