@@ -11,8 +11,6 @@ import (
 	"strings"
 )
 
-const pattern = "TODO"
-
 // Comments represents a set of Go file comments
 type Comments []*Comment
 
@@ -24,7 +22,7 @@ type Comment struct {
 }
 
 // Parse parses the comments contained in a Go package
-func (c *Comments) Parse(path, dir string) error {
+func (c *Comments) Parse(path, dir, pattern string) error {
 	pkg, err := importPkg(path, dir)
 	if err != nil {
 		return err
@@ -32,7 +30,7 @@ func (c *Comments) Parse(path, dir string) error {
 
 	for _, file := range pkg.GoFiles {
 		fname := filepath.Join(pkg.Dir, file)
-		fileComments, err := extractTODO(fname)
+		fileComments, err := extractPattern(fname, pattern)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Couldn't retrieve comments from %s: %s\n", fname, err)
 			continue
@@ -64,8 +62,8 @@ func importPkg(path, dir string) (*build.Package, error) {
 	return pkg, nil
 }
 
-// extractTODO extracts comments containing TODO from a Go source file
-func extractTODO(fname string) ([]*Comment, error) {
+// extractPattern extracts comments containing TODO from a Go source file
+func extractPattern(fname, pattern string) ([]*Comment, error) {
 	comments := []*Comment{}
 
 	// Parse the file and create the AST
