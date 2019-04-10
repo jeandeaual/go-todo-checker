@@ -54,7 +54,7 @@ func httpHandler(workdir string) http.HandlerFunc {
 		}
 
 		// Parse the package comments
-		var comments Comments
+		comments := NewComments()
 
 		log.Printf("Checking for %s in comments of %s\n", pattern, path)
 

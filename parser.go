@@ -14,6 +14,11 @@ import (
 // Comments represents a set of Go file comments
 type Comments []*Comment
 
+// NewComments initializes a new slice of comments
+func NewComments() Comments {
+	return make(Comments, 0)
+}
+
 // Comment represents a Go comment line
 type Comment struct {
 	Filename string `json:"filename"`

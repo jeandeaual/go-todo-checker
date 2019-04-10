@@ -51,7 +51,7 @@ func main() {
 	path := flag.Args()[0]
 
 	// Parse the package comments
-	var comments Comments
+	comments := NewComments()
 
 	err = comments.Parse(path, workdir, pattern)
 	if err != nil {
