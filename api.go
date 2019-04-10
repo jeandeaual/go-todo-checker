@@ -71,6 +71,8 @@ func httpHandler(workdir string) http.HandlerFunc {
 			return
 		}
 
+		log.Printf("Found %d comment(s) in %s\n", len(comments), path)
+
 		responseBody, err := json.Marshal(comments)
 		if err != nil {
 			// Marshalling a map of structs containing only serializable data types

@@ -43,8 +43,11 @@ func main() {
 	if serverMode {
 		// Expose an HTTP API
 		http.HandleFunc("/", httpHandler(workdir))
+		log.Println("Listening on port", port)
 		log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
 	}
+
+	// Command-line mode
 
 	if flag.NArg() != 1 {
 		fmt.Fprint(os.Stderr, "A package is required\n\n")
@@ -52,7 +55,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Standard command-line mode
 	path := flag.Args()[0]
 
 	// Parse the package comments
