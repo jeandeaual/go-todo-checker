@@ -14,9 +14,9 @@ type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
-// errorResponse writes an error to the response payload and appropriately sets
+// replyWithError writes an error to the response payload and appropriately sets
 // the Content-Type and response code
-func errorResponse(statusCode int, message string, w http.ResponseWriter) {
+func replyWithError(statusCode int, message string, w http.ResponseWriter) {
 	responseBody, err := json.Marshal(ErrorResponse{
 		Message: message,
 	})
@@ -37,7 +37,7 @@ func httpHandler(workdir string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
 			// Only GET is supported
-			errorResponse(http.StatusBadRequest, "Only the GET method is supported", w)
+			replyWithError(http.StatusBadRequest, "Only the GET method is supported", w)
 			return
 		}
 
@@ -45,7 +45,7 @@ func httpHandler(workdir string) http.HandlerFunc {
 		path := strings.TrimPrefix(r.URL.Path, "/")
 
 		if len(path) == 0 {
-			errorResponse(http.StatusBadRequest, "You need to specify a package", w)
+			replyWithError(http.StatusBadRequest, "You need to specify a package", w)
 			return
 		}
 
@@ -67,7 +67,7 @@ func httpHandler(workdir string) http.HandlerFunc {
 		if err != nil {
 			message := fmt.Sprintf("Couldn't parse comments from package %s: %s\n", path, err)
 			log.Println(message)
-			errorResponse(http.StatusBadRequest, message, w)
+			replyWithError(http.StatusBadRequest, message, w)
 			return
 		}
 
