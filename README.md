@@ -26,13 +26,37 @@ Flags:
         Run the program in server mode
 ```
 
-Example:
+### Examples
+
+Command-line:
 
 ```
 $ ./todo fmt
 /usr/lib/go/src/fmt/scan.go:732:
 TODO: accept N and Ni independently?
 ```
+
+Server mode:
+
+* Run the server
+
+  ```
+  $ ./todo -server -port 8080
+  2006/01/02 15:04:05 Listening on port 8080
+  ```
+
+* Query the API:
+
+  ```
+  $ curl -w "\n" http://localhost:8080/fmt
+  [{"filename":"/usr/lib/go/src/fmt/scan.go","line":732,"text":"TODO: accept N and Ni independently?\n"}]
+
+  $ curl -w "\n" http://localhost:8080/net/http/httptest
+  []
+
+  $ curl -w "\n" http://localhost:8080/bytes?pattern=FIXME
+  [{"filename":"/usr/lib/go/src/bytes/buffer.go","line":25,"text":"FIXME: it would be advisable to align Buffer to cachelines to avoid false\nsharing.\n"}]
+  ```
 
 ## Testing
 
