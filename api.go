@@ -21,7 +21,7 @@ func errorResponse(statusCode int, message string, w http.ResponseWriter) {
 		Message: message,
 	})
 	if err != nil {
-		// Marshalling of a struct containing only serializable data types
+		// Marshalling a struct containing only serializable data types
 		// cannot fail, but just in case, handle the error
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -56,7 +56,7 @@ func httpHandler(workdir string) http.HandlerFunc {
 		// Parse the package comments
 		comments := NewComments()
 
-		log.Printf("Checking for %s in comments of %s\n", pattern, path)
+		log.Printf("Checking for %s in the comments of package %s\n", pattern, path)
 
 		err := comments.Parse(path, workdir, pattern)
 		if err != nil {
@@ -68,7 +68,7 @@ func httpHandler(workdir string) http.HandlerFunc {
 
 		responseBody, err := json.Marshal(comments)
 		if err != nil {
-			// Marshalling of a map of structs containing only serializable data types
+			// Marshalling a map of structs containing only serializable data types
 			// cannot fail, but just in case, handle the error
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
