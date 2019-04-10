@@ -37,9 +37,7 @@ func main() {
 
 	if serverMode {
 		// Expose an HTTP API
-		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-			httpHandler(w, r, workdir)
-		})
+		http.HandleFunc("/", httpHandler(workdir))
 		log.Fatal(http.ListenAndServe(":8080", nil))
 	}
 
