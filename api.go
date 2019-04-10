@@ -37,7 +37,7 @@ func httpHandler(workdir string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
 			// Only GET is supported
-			replyWithError(http.StatusBadRequest, "Only the GET method is supported", w)
+			replyWithError(http.StatusMethodNotAllowed, "Only the GET method is supported", w)
 			return
 		}
 

@@ -34,7 +34,7 @@ paths:
                   line: 732
                   text: "TODO: accept N and Ni independently?\n"
         "400":
-          description: The request method or one of the parameter provided by the user is wrong.
+          description: One of the parameter provided by the user is wrong.
           content:
             application/json:
               schema:

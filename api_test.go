@@ -30,7 +30,7 @@ func TestHTTPHandler(t *testing.T) {
 
 	// Check the status code
 	if status := rr.Code; status != http.StatusOK {
-		t.Errorf("handler returned the wrong status code: got %v want %v",
+		t.Errorf("handler returned the wrong status code: got %v but expected %v",
 			status, http.StatusOK)
 	}
 
@@ -56,7 +56,7 @@ func TestHTTPHandlerWithPattern(t *testing.T) {
 
 	// Check the status code
 	if status := rr.Code; status != http.StatusOK {
-		t.Errorf("handler returned the wrong status code: got %v want %v",
+		t.Errorf("handler returned the wrong status code: got %v but expected %v",
 			status, http.StatusOK)
 	}
 
@@ -81,9 +81,9 @@ func TestHTTPHandlerPOST(t *testing.T) {
 	handler.ServeHTTP(rr, req)
 
 	// Check the status code
-	if status := rr.Code; status != http.StatusBadRequest {
-		t.Errorf("handler returned the wrong status code: got %v want %v",
-			status, http.StatusOK)
+	if status := rr.Code; status != http.StatusMethodNotAllowed {
+		t.Errorf("handler returned the wrong status code: got %v but expected %v",
+			status, http.StatusMethodNotAllowed)
 	}
 }
 
@@ -99,8 +99,8 @@ func TestHTTPHandlerNoPackage(t *testing.T) {
 
 	// Check the status code
 	if status := rr.Code; status != http.StatusBadRequest {
-		t.Errorf("handler returned the wrong status code: got %v want %v",
-			status, http.StatusOK)
+		t.Errorf("handler returned the wrong status code: got %v but expected %v",
+			status, http.StatusBadRequest)
 	}
 }
 
@@ -116,7 +116,7 @@ func TestHTTPHandlerInvalidPackage(t *testing.T) {
 
 	// Check the status code
 	if status := rr.Code; status != http.StatusBadRequest {
-		t.Errorf("handler returned the wrong status code: got %v want %v",
-			status, http.StatusOK)
+		t.Errorf("handler returned the wrong status code: got %v but expected %v",
+			status, http.StatusBadRequest)
 	}
 }
