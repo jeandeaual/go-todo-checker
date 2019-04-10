@@ -87,6 +87,23 @@ func TestHTTPHandlerPOST(t *testing.T) {
 	}
 }
 
+func TestHTTPHandlerNoPackage(t *testing.T) {
+	handler, rr := prepareServer(t)
+
+	req, err := http.NewRequest("GET", "/", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	handler.ServeHTTP(rr, req)
+
+	// Check the status code
+	if status := rr.Code; status != http.StatusBadRequest {
+		t.Errorf("handler returned the wrong status code: got %v want %v",
+			status, http.StatusOK)
+	}
+}
+
 func TestHTTPHandlerInvalidPackage(t *testing.T) {
 	handler, rr := prepareServer(t)
 

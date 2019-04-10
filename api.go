@@ -44,6 +44,11 @@ func httpHandler(workdir string) http.HandlerFunc {
 		// Assume that anything after the first / in the URL is the package to parse
 		path := strings.TrimPrefix(r.URL.Path, "/")
 
+		if len(path) == 0 {
+			errorResponse(http.StatusBadRequest, "You need to specify a package", w)
+			return
+		}
+
 		queryValues := r.URL.Query()
 
 		pattern := defaultPattern
