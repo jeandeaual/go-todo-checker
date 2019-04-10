@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
+	"net/http"
 	"os"
 	"path/filepath"
 )
@@ -11,22 +13,20 @@ const defaultPattern = "TODO"
 
 func main() {
 	// Parse the command-line arguments
-	var pattern string
+	var (
+		serverMode bool
+		pattern    string
+	)
 
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "Usage: %s PACKAGE\n\nFlags:\n", filepath.Base(os.Args[0]))
+		fmt.Fprintf(os.Stderr, "Usage: %s [PACKAGE]\n\nFlags:\n", filepath.Base(os.Args[0]))
 		flag.PrintDefaults()
 	}
 
+	flag.BoolVar(&serverMode, "server", false, "Server mode")
 	flag.StringVar(&pattern, "pattern", defaultPattern, "Pattern to search for in the package comments")
 
 	flag.Parse()
-
-	if flag.NArg() != 1 {
-		fmt.Fprint(os.Stderr, "A package is required\n\n")
-		flag.Usage()
-		os.Exit(1)
-	}
 
 	// Retrieve the current working directory
 	workdir, err := os.Getwd()
@@ -35,6 +35,21 @@ func main() {
 		os.Exit(1)
 	}
 
+	if serverMode {
+		// Expose an HTTP API
+		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			httpHandler(w, r, workdir)
+		})
+		log.Fatal(http.ListenAndServe(":8080", nil))
+	}
+
+	if flag.NArg() != 1 {
+		fmt.Fprint(os.Stderr, "A package is required\n\n")
+		flag.Usage()
+		os.Exit(1)
+	}
+
+	// Standard command-line mode
 	path := flag.Args()[0]
 
 	// Parse the package comments

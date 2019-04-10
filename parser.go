@@ -16,9 +16,9 @@ type Comments []*Comment
 
 // Comment represents a Go comment line
 type Comment struct {
-	Filename string
-	Line     int
-	Text     string
+	Filename string `json:"filename"`
+	Line     int    `json:"line"`
+	Text     string `json:"text"`
 }
 
 // Parse parses the comments contained in a Go package
