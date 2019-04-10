@@ -1,0 +1,71 @@
+openapi: 3.0.0
+info:
+  title: TODO Checker
+  version: 0.0.1
+paths:
+  /{package}:
+    get:
+      description: Return the list of comments in the specified Go package containing a specific pattern.
+      parameters:
+        - in: path
+          name: package
+          required: true
+          description: Name of the package to parse.
+          schema:
+            type: string
+        - in: query
+          name: pattern
+          required: false
+          description: Pattern to look for in the comments.
+          schema:
+            type: string
+            default: "TODO"
+      responses:
+        "200":
+          description: List of comments that were found in the package.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Comment"
+              example:
+                - filename: /usr/lib/go/src/fmt/scan.go
+                  line: 732
+                  text: "TODO: accept N and Ni independently?\n"
+        "400":
+          description: The request method or one of the parameter provided by the user is wrong.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+servers:
+  - url: /
+components:
+  schemas:
+    Comment:
+      type: object
+      properties:
+        filename:
+          type: string
+        line:
+          type: integer
+        text:
+          type: string
+      required:
+        - filename
+        - line
+        - text
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - reason

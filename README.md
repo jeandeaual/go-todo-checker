@@ -45,3 +45,10 @@ Run the tests:
 ```
 go test
 ```
+
+## API Documentation
+
+The documentation of the HTTP API (when using the `-server` flag) is written
+in the [OpenAPI specification file](openapi.yaml).\
+It can be viewed using the [Swagger editor](https://editor.swagger.io/) for
+example.
