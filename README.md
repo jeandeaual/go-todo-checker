@@ -15,13 +15,15 @@ go build -o todo
 ## Usage
 
 ```
-Usage: test.exe [PACKAGE]
+Usage: todo [PACKAGE]
 
 Flags:
   -pattern string
-        Pattern to search for in the package comments (default "TODO")
+        Pattern to search for in the package comments (only used without -server) (default "TODO")
+  -port int
+        Server port number (only used with -server) (default 80)
   -server
-        Server mode
+        Run the program in server mode
 ```
 
 Example:

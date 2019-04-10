@@ -9,12 +9,16 @@ import (
 	"path/filepath"
 )
 
-const defaultPattern = "TODO"
+const (
+	defaultPattern = "TODO"
+	defaultPort    = 80
+)
 
 func main() {
 	// Parse the command-line arguments
 	var (
 		serverMode bool
+		port       int
 		pattern    string
 	)
 
@@ -23,8 +27,9 @@ func main() {
 		flag.PrintDefaults()
 	}
 
-	flag.BoolVar(&serverMode, "server", false, "Server mode")
-	flag.StringVar(&pattern, "pattern", defaultPattern, "Pattern to search for in the package comments")
+	flag.BoolVar(&serverMode, "server", false, "Run the program in server mode")
+	flag.StringVar(&pattern, "pattern", defaultPattern, "Pattern to search for in the package comments (only used without -server)")
+	flag.IntVar(&port, "port", defaultPort, "Server port number (only used with -server)")
 
 	flag.Parse()
 
@@ -38,7 +43,7 @@ func main() {
 	if serverMode {
 		// Expose an HTTP API
 		http.HandleFunc("/", httpHandler(workdir))
-		log.Fatal(http.ListenAndServe(":8080", nil))
+		log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
 	}
 
 	if flag.NArg() != 1 {
