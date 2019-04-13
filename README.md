@@ -8,7 +8,7 @@ Go 1.6 or later.
 
 ## Build Instructions
 
-Make sure the repository is located in `GOPATH`, and run:
+Make sure the repository is located in `GOPATH`, and run `make` or:
 
 ```
 go build ./cmd/todo
@@ -68,13 +68,13 @@ Make sure testify is installed:
 go get github.com/stretchr/testify
 ```
 
-Run the tests:
+Run the tests using `make test` or:
 
 ```
 go test -v ./...
 ```
 
-To generate a code coverage report:
+To generate a code coverage report using `make coverage` or:
 
 ```
 go test -coverpkg=./... -coverprofile="coverage.out" ./...
