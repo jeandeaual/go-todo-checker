@@ -8,8 +8,10 @@ Go 1.6 or later.
 
 ## Build Instructions
 
+Make sure the repository is located in `GOPATH`, and run:
+
 ```
-go build -o todo
+go build ./cmd/todo
 ```
 
 ## Usage
@@ -69,7 +71,7 @@ go get github.com/stretchr/testify
 Run the tests:
 
 ```
-go test
+go test -v ./...
 ```
 
 ## API Documentation

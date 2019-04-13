@@ -6,6 +6,8 @@ import (
 	"net/http/httptest"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func prepareServer(t *testing.T) (http.HandlerFunc, *httptest.ResponseRecorder) {
@@ -15,33 +17,26 @@ func prepareServer(t *testing.T) (http.HandlerFunc, *httptest.ResponseRecorder) 
 		t.Fatal(err)
 	}
 
-	return http.HandlerFunc(httpHandler(workdir)), httptest.NewRecorder()
+	return httpHandler(workdir), httptest.NewRecorder()
 }
 
 func TestHTTPHandler(t *testing.T) {
 	handler, rr := prepareServer(t)
 
 	req, err := http.NewRequest("GET", "/fmt", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Nil(t, err)
 
 	handler.ServeHTTP(rr, req)
 
 	// Check the status code
-	if status := rr.Code; status != http.StatusOK {
-		t.Errorf("handler returned the wrong status code: got %v but expected %v",
-			status, http.StatusOK)
-	}
+	assert.Equal(t, http.StatusOK, rr.Code, "handler returned a wrong status code")
 
 	// Make sure the response body is an array
 	// The comments in the "fmt" package might change depending the version
 	// of Go, so don't check the exact payload
 	var response []interface{}
 	err = json.Unmarshal(rr.Body.Bytes(), &response)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Nil(t, err)
 }
 
 func TestHTTPHandlerWithPattern(t *testing.T) {
@@ -55,68 +50,48 @@ func TestHTTPHandlerWithPattern(t *testing.T) {
 	handler.ServeHTTP(rr, req)
 
 	// Check the status code
-	if status := rr.Code; status != http.StatusOK {
-		t.Errorf("handler returned the wrong status code: got %v but expected %v",
-			status, http.StatusOK)
-	}
+	assert.Equal(t, http.StatusOK, rr.Code, "handler returned a wrong status code")
 
 	// Make sure the response body is an array
 	// The comments in the "net/http" package might change depending the version
 	// of Go, so don't check the exact payload
 	var response []interface{}
 	err = json.Unmarshal(rr.Body.Bytes(), &response)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Nil(t, err)
 }
 
 func TestHTTPHandlerPOST(t *testing.T) {
 	handler, rr := prepareServer(t)
 
 	req, err := http.NewRequest("POST", "/fmt", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Nil(t, err)
 
 	handler.ServeHTTP(rr, req)
 
 	// Check the status code
-	if status := rr.Code; status != http.StatusMethodNotAllowed {
-		t.Errorf("handler returned the wrong status code: got %v but expected %v",
-			status, http.StatusMethodNotAllowed)
-	}
+	assert.Equal(t, http.StatusMethodNotAllowed, rr.Code, "handler returned a wrong status code")
 }
 
 func TestHTTPHandlerNoPackage(t *testing.T) {
 	handler, rr := prepareServer(t)
 
 	req, err := http.NewRequest("GET", "/", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Nil(t, err)
 
 	handler.ServeHTTP(rr, req)
 
 	// Check the status code
-	if status := rr.Code; status != http.StatusBadRequest {
-		t.Errorf("handler returned the wrong status code: got %v but expected %v",
-			status, http.StatusBadRequest)
-	}
+	assert.Equal(t, http.StatusBadRequest, rr.Code, "handler returned a wrong status code")
 }
 
 func TestHTTPHandlerInvalidPackage(t *testing.T) {
 	handler, rr := prepareServer(t)
 
 	req, err := http.NewRequest("GET", "/invalid/package", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
+	assert.Nil(t, err)
 
 	handler.ServeHTTP(rr, req)
 
 	// Check the status code
-	if status := rr.Code; status != http.StatusBadRequest {
-		t.Errorf("handler returned the wrong status code: got %v but expected %v",
-			status, http.StatusBadRequest)
-	}
+	assert.Equal(t, http.StatusBadRequest, rr.Code, "handler returned a wrong status code")
 }

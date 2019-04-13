@@ -1,6 +1,6 @@
 // +build go1.7
 
-package main
+package todo
 
 import "go/build"
 

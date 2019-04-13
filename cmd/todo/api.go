@@ -6,6 +6,9 @@ import (
 	"log"
 	"net/http"
 	"strings"
+
+	// Replace with `todo "../.."` if the repository is not in the GOPATH
+	todo "github.com/m-rec/d508b714f416b2c7b0b935be70e04d17085cba2b"
 )
 
 // ErrorResponse is a struct representing the response sent by the API
@@ -29,7 +32,10 @@ func replyWithError(statusCode int, message string, w http.ResponseWriter) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
-	w.Write(responseBody)
+	_, err = w.Write(responseBody)
+	if err != nil {
+		log.Println("Couldn't write the error response body:", err)
+	}
 }
 
 // httpHandler is the main request handler of the HTTP API
@@ -59,7 +65,7 @@ func httpHandler(workdir string) http.HandlerFunc {
 		}
 
 		// Parse the package comments
-		comments := NewComments()
+		comments := todo.NewComments()
 
 		log.Printf("Checking for %s in the comments of package %s\n", pattern, path)
 
@@ -82,6 +88,9 @@ func httpHandler(workdir string) http.HandlerFunc {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		w.Write(responseBody)
+		_, err = w.Write(responseBody)
+		if err != nil {
+			log.Println("Couldn't write the response body:", err)
+		}
 	}
 }

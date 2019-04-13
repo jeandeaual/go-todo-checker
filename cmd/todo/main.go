@@ -7,6 +7,9 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+
+	// Replace with `todo "../.."` if the repository is not in the GOPATH
+	todo "github.com/m-rec/d508b714f416b2c7b0b935be70e04d17085cba2b"
 )
 
 const (
@@ -27,9 +30,12 @@ func main() {
 		flag.PrintDefaults()
 	}
 
-	flag.BoolVar(&serverMode, "server", false, "Run the program in server mode")
-	flag.StringVar(&pattern, "pattern", defaultPattern, "Pattern to search for in the package comments (only used without -server)")
-	flag.IntVar(&port, "port", defaultPort, "Server port number (only used with -server)")
+	flag.BoolVar(&serverMode, "server", false,
+		"Run the program in server mode")
+	flag.StringVar(&pattern, "pattern", defaultPattern,
+		"Pattern to search for in the package comments (only used without -server)")
+	flag.IntVar(&port, "port", defaultPort,
+		"Server port number (only used with -server)")
 
 	flag.Parse()
 
@@ -58,7 +64,7 @@ func main() {
 	path := flag.Args()[0]
 
 	// Parse the package comments
-	comments := NewComments()
+	comments := todo.NewComments()
 
 	err = comments.Parse(path, workdir, pattern)
 	if err != nil {
