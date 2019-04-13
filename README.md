@@ -95,4 +95,4 @@ This will generate `docs/swagger.yaml` and `docs/swagger.json`, which can be
 viewed using the [Swagger editor](https://editor.swagger.io/) for example.
 
 The documentation is also available as an [OpenAPI specification file](docs/openapi.yaml),
-which can be viewed using the same tool as the auto-generated file.
+which can be viewed using the same tool as the auto-generated files.
