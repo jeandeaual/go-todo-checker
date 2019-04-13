@@ -39,58 +39,60 @@ func replyWithError(statusCode int, message string, w http.ResponseWriter) {
 }
 
 // httpHandler is the main request handler of the HTTP API
-func httpHandler(workdir string) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			// Only GET is supported
-			replyWithError(http.StatusMethodNotAllowed, "Only the GET method is supported", w)
-			return
-		}
+type httpHandler struct {
+	workdir string
+}
 
-		// Assume that anything after the first / in the URL is the package to parse
-		path := strings.TrimPrefix(r.URL.Path, "/")
+func (h *httpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		// Only GET is supported
+		replyWithError(http.StatusMethodNotAllowed, "Only the GET method is supported", w)
+		return
+	}
 
-		if len(path) == 0 {
-			replyWithError(http.StatusBadRequest, "You need to specify a package", w)
-			return
-		}
+	// Assume that anything after the first / in the URL is the package to parse
+	path := strings.TrimPrefix(r.URL.Path, "/")
 
-		queryValues := r.URL.Query()
+	if len(path) == 0 {
+		replyWithError(http.StatusBadRequest, "You need to specify a package", w)
+		return
+	}
 
-		pattern := defaultPattern
+	queryValues := r.URL.Query()
 
-		// Check if the user provided a pattern in the query string
-		if param := queryValues.Get("pattern"); len(param) > 0 {
-			pattern = param
-		}
+	pattern := defaultPattern
 
-		// Parse the package comments
-		comments := todo.NewComments()
+	// Check if the user provided a pattern in the query string
+	if param := queryValues.Get("pattern"); len(param) > 0 {
+		pattern = param
+	}
 
-		log.Printf("Checking for %s in the comments of package %s\n", pattern, path)
+	// Parse the package comments
+	comments := todo.NewComments()
 
-		err := comments.Parse(path, workdir, pattern)
-		if err != nil {
-			message := fmt.Sprintf("Couldn't parse comments from package %s: %s\n", path, err)
-			log.Println(message)
-			replyWithError(http.StatusBadRequest, message, w)
-			return
-		}
+	log.Printf("Checking for %s in the comments of package %s\n", pattern, path)
 
-		log.Printf("Found %d comment(s) in %s\n", len(comments), path)
+	err := comments.Parse(path, h.workdir, pattern)
+	if err != nil {
+		message := fmt.Sprintf("Couldn't parse comments from package %s: %s\n", path, err)
+		log.Println(message)
+		replyWithError(http.StatusBadRequest, message, w)
+		return
+	}
 
-		responseBody, err := json.Marshal(comments)
-		if err != nil {
-			// Marshalling a map of structs containing only serializable data types
-			// cannot fail, but just in case, handle the error
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
+	log.Printf("Found %d comment(s) in %s\n", len(comments), path)
 
-		w.Header().Set("Content-Type", "application/json")
-		_, err = w.Write(responseBody)
-		if err != nil {
-			log.Println("Couldn't write the response body:", err)
-		}
+	responseBody, err := json.Marshal(comments)
+	if err != nil {
+		// Marshalling a map of structs containing only serializable data types
+		// cannot fail, but just in case, handle the error
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	_, err = w.Write(responseBody)
+	if err != nil {
+		log.Println("Couldn't write the response body:", err)
 	}
 }

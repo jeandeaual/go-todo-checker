@@ -48,9 +48,12 @@ func main() {
 
 	if serverMode {
 		// Expose an HTTP API
-		http.HandleFunc("/", httpHandler(workdir))
+		mux := http.NewServeMux()
+		mux.Handle("/", &httpHandler{
+			workdir: workdir,
+		})
 		log.Println("Listening on port", port)
-		log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
+		log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), mux))
 	}
 
 	// Command-line mode

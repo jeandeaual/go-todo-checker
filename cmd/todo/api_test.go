@@ -10,14 +10,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func prepareServer(t *testing.T) (http.HandlerFunc, *httptest.ResponseRecorder) {
+func prepareServer(t *testing.T) (http.Handler, *httptest.ResponseRecorder) {
 	// Retrieve the current working directory
 	workdir, err := os.Getwd()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	return httpHandler(workdir), httptest.NewRecorder()
+	return &httpHandler{workdir: workdir}, httptest.NewRecorder()
 }
 
 func TestHTTPHandler(t *testing.T) {
