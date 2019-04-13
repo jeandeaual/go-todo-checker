@@ -8,7 +8,8 @@ Go 1.6 or later.
 
 ## Build Instructions
 
-Make sure the repository is located in `GOPATH`, and run `make` or:
+Make sure the repository is located in `GOPATH` and run `make` or
+the following command:
 
 ```
 go build ./cmd/todo
@@ -62,13 +63,14 @@ Server mode:
 
 ## Testing
 
-Run the tests using `make test` or:
+Run the tests using `make test` or the following command:
 
 ```
 go test -v ./...
 ```
 
-To generate a code coverage report using `make coverage` or:
+To generate a code coverage report using `make coverage` or
+the following commands:
 
 ```
 go test -coverpkg=./... -coverprofile="coverage.out" ./...
