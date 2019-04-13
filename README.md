@@ -74,9 +74,29 @@ Run the tests:
 go test -v ./...
 ```
 
+To generate a code coverage report:
+
+```
+go test -coverpkg=./... -coverprofile="coverage.out" ./...
+go tool cover -html="coverage.out"
+```
+
 ## API Documentation
 
-The documentation of the HTTP API (when using the `-server` flag) is written
-in the [OpenAPI specification file](openapi.yaml).\
-It can be viewed using the [Swagger editor](https://editor.swagger.io/) for
-example.
+The documentation of the HTTP API (when using the `-server` flag) can be
+generated using `make doc`, or by following these instructions:
+
+* Install [swag](https://github.com/swaggo/swag)
+  * `go get -u github.com/swaggo/swag/cmd/swag`
+  * Make sure `$GOPATH/bin` is in your `$PATH`
+* Run the tool
+
+  ```
+  swag init -g ./cmd/todo/api.go
+  ```
+
+This will generate `docs/swagger.yaml` and `docs/swagger.json`, which can be
+viewed using the [Swagger editor](https://editor.swagger.io/) for example.
+
+The documentation is also available as an [OpenAPI specification file](docs/openapi.yaml),
+which can be viewed using the same tool as the auto-generated file.
