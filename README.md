@@ -62,12 +62,6 @@ Server mode:
 
 ## Testing
 
-Make sure testify is installed:
-
-```
-go get github.com/stretchr/testify
-```
-
 Run the tests using `make test` or:
 
 ```

@@ -3,38 +3,51 @@ package todo
 import (
 	"os"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
+
+func assertEqual(t *testing.T, expected interface{}, value interface{}, msg string) bool {
+	if value != expected {
+		t.Errorf("%s: got %v but expected %v", msg, value, expected)
+		return false
+	}
+
+	return true
+}
 
 func TestImportPkg(t *testing.T) {
 	// Standard package
 	pkg, err := importPkg("fmt", "")
-	assert.Nil(t, err)
-	assert.Equal(t, "fmt", pkg.Name)
+	if err != nil {
+		t.Fatal("err should be nil")
+	}
+	assertEqual(t, "fmt", pkg.Name, "the wrong package was imported")
 
 	// Command package
 	_, err = importPkg("cmd/go", "")
-	assert.NotNil(t, err)
+	if err == nil {
+		t.Error(err)
+	}
 
 	// Non-existing package
 	_, err = importPkg("", "")
-	assert.NotNil(t, err)
+	if err == nil {
+		t.Error(err)
+	}
 }
 
 func TestExtractPattern(t *testing.T) {
 	// TODO: Comment used for testing
 
 	comments, err := extractPattern("parser_test.go", "TODO")
-	if !assert.Nil(t, err) {
+	if err != nil {
 		// If no comment was extracted, don't execute the following tests
+		t.Fatal(err)
+	}
+	if !assertEqual(t, 1, len(comments), "retrieved an invalid number of comments") {
 		return
 	}
-	if !assert.Equal(t, 1, len(comments)) {
-		return
-	}
-	assert.Equal(t, "parser_test.go", comments[0].Filename)
-	assert.Equal(t, "TODO: Comment used for testing\n", comments[0].Text)
+	assertEqual(t, "parser_test.go", comments[0].Filename, "invalid filename")
+	assertEqual(t, "TODO: Comment used for testing\n", comments[0].Text, "invalid comment text")
 }
 
 func TestCommentsParse(t *testing.T) {
@@ -43,7 +56,9 @@ func TestCommentsParse(t *testing.T) {
 	workdir, _ := os.Getwd()
 
 	err := comments.Parse("fmt", workdir, "TODO")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatal("err should be nil")
+	}
 
 	// The implementation is already tested by TestImportPkg and TestExtractPattern
 }
