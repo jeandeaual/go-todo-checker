@@ -31,7 +31,7 @@ Flags:
 
 ### Examples
 
-Command-line:
+#### Command-line
 
 ```
 $ ./todo fmt
@@ -39,7 +39,7 @@ $ ./todo fmt
 TODO: accept N and Ni independently?
 ```
 
-Server mode:
+#### Server mode
 
 * Run the server
 
