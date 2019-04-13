@@ -1,3 +1,6 @@
+docs/*.go
+docs/swagger.*
+
 ### Go ###
 # Binaries for programs and plugins
 *.exe

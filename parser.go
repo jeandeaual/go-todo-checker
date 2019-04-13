@@ -21,9 +21,9 @@ func NewComments() Comments {
 
 // Comment represents a Go comment line
 type Comment struct {
-	Filename string `json:"filename"`
-	Line     int    `json:"line"`
-	Text     string `json:"text"`
+	Filename string `json:"filename" example:"/usr/lib/go/src/fmt/scan.go"`
+	Line     int    `json:"line" example:"732"`
+	Text     string `json:"text" example:"TODO: accept N and Ni independently?\n"`
 }
 
 // Parse parses the comments contained in a Go package

@@ -47,6 +47,7 @@ func main() {
 	}
 
 	if serverMode {
+		// Server mode
 		// Expose an HTTP API
 		mux := http.NewServeMux()
 		mux.Handle("/", &httpHandler{
