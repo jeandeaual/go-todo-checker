@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -53,8 +52,12 @@ func main() {
 		mux.Handle("/", &httpHandler{
 			workdir: workdir,
 		})
-		log.Println("Listening on port", port)
-		log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), mux))
+		infof("Listening on port %d\n", port)
+		err = http.ListenAndServe(fmt.Sprintf(":%d", port), mux)
+		if err != nil {
+			errorf("An error occurred when running the server: %s\n", err)
+			os.Exit(1)
+		}
 	}
 
 	// Command-line mode

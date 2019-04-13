@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"strings"
 
@@ -34,7 +33,7 @@ func replyWithError(statusCode int, message string, w http.ResponseWriter) {
 	w.WriteHeader(statusCode)
 	_, err = w.Write(responseBody)
 	if err != nil {
-		log.Println("Couldn't write the error response body:", err)
+		errorf("Couldn't write the error response body: %s\n", err)
 	}
 }
 
@@ -86,17 +85,17 @@ func (h *httpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// Parse the package comments
 	comments := todo.NewComments()
 
-	log.Printf("Checking for %s in the comments of package %s\n", pattern, path)
+	infof("Checking for %s in the comments of package %s\n", pattern, path)
 
 	err := comments.Parse(path, h.workdir, pattern)
 	if err != nil {
 		message := fmt.Sprintf("Couldn't parse comments from package %s: %s\n", path, err)
-		log.Println(message)
+		errorf(message)
 		replyWithError(http.StatusBadRequest, message, w)
 		return
 	}
 
-	log.Printf("Found %d comment(s) in %s\n", len(comments), path)
+	infof("Found %d comment(s) in %s\n", len(comments), path)
 
 	responseBody, err := json.Marshal(comments)
 	if err != nil {
@@ -109,6 +108,6 @@ func (h *httpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	_, err = w.Write(responseBody)
 	if err != nil {
-		log.Println("Couldn't write the response body:", err)
+		errorf("Couldn't write the response body: %s\n", err)
 	}
 }
