@@ -1,6 +1,6 @@
 # TODO Checker
 
-Command-line tool to create a list of TODOs written within Go source code.
+Command-line tool to display a list of TODOs written within a Go package.
 
 ## Prerequisites
 
